@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Athens Sailing Routes — April 2026</title>
-  <meta name="description" content="Compare 8 two-week sailing routes from Athens. April 18 – May 2, 2026." />
+  <meta name="description" content="Compare 9 two-week sailing routes from Athens. April 18 – May 2, 2026." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9B%B5</text></svg>" />
 
   <!-- Fonts -->
@@ -31,8 +31,8 @@
       </h1>
       <div class="entry-divider"></div>
       <p class="entry-subtitle">
-        Eight two-week itineraries from Piraeus and Lavrion.<br />
-        Compare routes, explore day-by-day plans, and vote for your favourite.
+        Nine two-week itineraries from Piraeus and Lavrion.<br />
+        Compare routes, explore destinations, and vote for your favourite.
       </p>
       <div class="entry-form">
         <input
@@ -47,7 +47,7 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
-      <p class="entry-hint">8 routes across the Aegean — from sheltered gulfs to open-water crossings</p>
+      <p class="entry-hint">9 routes across the Aegean — from sheltered gulfs to open-water crossings</p>
     </div>
     <div class="entry-decoration">
       <svg viewBox="0 0 200 200" class="entry-wave" aria-hidden="true">
@@ -76,6 +76,10 @@
         <div class="header-center" id="header-route-name"></div>
         <div class="header-right">
           <span class="header-user" id="header-user"></span>
+          <button id="stops-tab-btn" class="btn btn-sm btn-outline">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1a3 3 0 013 3c0 2.5-3 5-3 5S4 6.5 4 4a3 3 0 013-3z" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="7" cy="4" r="1" fill="currentColor"/></svg>
+            Stops
+          </button>
           <button id="vote-tab-btn" class="btn btn-sm btn-outline">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             Vote
@@ -155,8 +159,7 @@
                 <thead>
                   <tr>
                     <th>Day</th>
-                    <th>From</th>
-                    <th>To</th>
+                    <th>Route</th>
                     <th>Distance</th>
                     <th>Time</th>
                     <th>Highlights</th>
@@ -174,6 +177,41 @@
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1l2.47 5.01L17 6.76l-4 3.9.94 5.5L9 13.77l-4.94 2.39.94-5.5-4-3.9 5.53-.75L9 1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
               Vote for this route
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Destinations / Stops Section (overlay) -->
+    <section id="stops-section" class="stops-section hidden">
+      <div class="stops-scroll">
+        <div class="stops-header">
+          <h2 class="stops-title">Destinations</h2>
+          <p class="stops-subtitle">Browse all stops — click any destination to see which routes pass through it</p>
+        </div>
+
+        <!-- Region filter -->
+        <div class="stops-filters" id="stops-filters">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Stops grid -->
+        <div class="stops-grid" id="stops-grid">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Stop detail panel (shown when a stop is clicked) -->
+        <div class="stop-detail-panel hidden" id="stop-detail-panel">
+          <div class="stop-detail-close" id="stop-detail-close">&times;</div>
+          <div class="stop-detail-image" id="stop-detail-image"></div>
+          <div class="stop-detail-body">
+            <h3 class="stop-detail-name" id="stop-detail-name"></h3>
+            <span class="stop-detail-region" id="stop-detail-region"></span>
+            <p class="stop-detail-desc" id="stop-detail-desc"></p>
+            <h4 class="stop-detail-routes-title">Routes through this stop</h4>
+            <div class="stop-detail-routes" id="stop-detail-routes">
+              <!-- Rendered by JS -->
+            </div>
           </div>
         </div>
       </div>

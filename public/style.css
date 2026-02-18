@@ -1462,6 +1462,349 @@ table { border-collapse: collapse; width: 100%; }
 
 
 /* =========================================================
+   DESTINATIONS / STOPS
+   ========================================================= */
+
+.stops-section {
+  position: fixed;
+  inset: 0;
+  top: var(--header-h);
+  background: var(--bg);
+  z-index: 50;
+  overflow-y: auto;
+}
+
+.stops-scroll {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+}
+
+.stops-header {
+  margin-bottom: var(--space-xl);
+}
+
+.stops-title {
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.stops-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Region Filters */
+.stops-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.stops-filter-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: capitalize;
+}
+
+.stops-filter-btn:hover {
+  border-color: var(--text-light);
+  color: var(--text);
+}
+
+.stops-filter-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+/* Stops Grid */
+.stops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-md);
+}
+
+.stop-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stop-card:hover {
+  border-color: var(--text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.stop-card-image {
+  width: 100%;
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-muted);
+  position: relative;
+}
+
+.stop-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.5));
+}
+
+.stop-card-region {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stop-card-body {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+}
+
+.stop-card-name {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.stop-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: var(--space-sm);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stop-card-routes-count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+/* Stop Detail Panel */
+.stop-detail-panel {
+  position: fixed;
+  top: var(--header-h);
+  right: 0;
+  width: 420px;
+  max-width: 100%;
+  height: calc(100vh - var(--header-h));
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 32px rgba(0,0,0,0.08);
+  z-index: 60;
+  overflow-y: auto;
+  animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.stop-detail-close {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--text-muted);
+  z-index: 2;
+  border: 1px solid var(--border);
+  transition: all 0.15s ease;
+}
+
+.stop-detail-close:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.stop-detail-image {
+  width: 100%;
+  height: 240px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-muted);
+}
+
+.stop-detail-body {
+  padding: var(--space-lg);
+}
+
+.stop-detail-name {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.stop-detail-region {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-md);
+}
+
+.stop-detail-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: var(--space-lg);
+}
+
+.stop-detail-routes-title {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-sm);
+}
+
+.stop-route-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  margin-bottom: var(--space-xs);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stop-route-link:hover {
+  background: var(--bg-muted);
+  border-color: var(--accent, var(--text-light));
+}
+
+.stop-route-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stop-route-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stop-route-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.stop-route-days {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.stop-route-link svg {
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+/* Itinerary thumbnails */
+.itinerary-stop-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.itinerary-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-muted);
+  flex-shrink: 0;
+}
+
+.itinerary-stop-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.itinerary-arrow {
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+.itinerary-to-name {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.itinerary-row {
+  transition: background 0.1s ease;
+}
+
+.itinerary-row:hover {
+  background: var(--bg-muted);
+}
+
+/* Mobile stop detail */
+@media (max-width: 768px) {
+  .stop-detail-panel {
+    width: 100%;
+    border-left: none;
+  }
+
+  .stops-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .stop-card-image {
+    height: 120px;
+  }
+}
+
+
+/* =========================================================
    PRINT (hide interactive bits)
    ========================================================= */
 

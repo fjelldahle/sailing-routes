@@ -8,7 +8,8 @@
   // ---- State ----
   let userName = '';
   let activeRouteId = null;
-  let currentView = 'explorer'; // 'explorer' | 'detail' | 'voting'
+  let currentView = 'explorer'; // 'explorer' | 'detail' | 'voting' | 'stops'
+  let activeStopFilter = 'all';
   let map = null;
   let detailMap = null;
   let routeLayers = {};
@@ -32,7 +33,9 @@
   const mapLegend = $('#map-legend');
   const routeDetail = $('#route-detail');
   const votingSection = $('#voting-section');
+  const stopsSection = $('#stops-section');
   const voteTabBtn = $('#vote-tab-btn');
+  const stopsTabBtn = $('#stops-tab-btn');
   const explorer = $('#explorer');
 
 
@@ -412,21 +415,45 @@
       <span class="difficulty-label" style="color:${diffColor}">${route.difficulty}</span>
     `;
 
-    // Itinerary table
-    const tbody = $('#detail-itinerary-body');
-    tbody.innerHTML = '';
+    // Itinerary — visual cards with images
+    const itineraryBody = $('#detail-itinerary-body');
+    itineraryBody.innerHTML = '';
     route.itinerary.forEach(stop => {
       const isRest = stop.nm === 0 && stop.hours === 0;
+      const destination = isRest ? stop.from : stop.to;
+      const img = STOP_IMAGES[destination] || '';
+      const stopData = STOPS_DATA[destination];
+
       const tr = document.createElement('tr');
+      tr.className = 'itinerary-row';
       tr.innerHTML = `
         <td><span class="itinerary-day">Day ${stop.day}</span></td>
-        <td class="itinerary-from">${stop.from}</td>
-        <td class="itinerary-to">${isRest ? '<span class="itinerary-rest">Rest day</span>' : stop.to}</td>
+        <td>
+          <div class="itinerary-stop-cell">
+            ${img ? `<div class="itinerary-thumb" style="background-image:url('${img}')"></div>` : ''}
+            <div class="itinerary-stop-info">
+              <span class="itinerary-from">${stop.from}</span>
+              ${isRest ? '<span class="itinerary-rest">Rest day</span>' : `<span class="itinerary-arrow">→</span><span class="itinerary-to-name">${stop.to}</span>`}
+            </div>
+          </div>
+        </td>
         <td>${isRest ? '—' : stop.nm + 'nm'}</td>
         <td>${isRest ? '—' : '~' + stop.hours + 'h'}</td>
         <td><span class="itinerary-highlight">${stop.highlight}</span></td>
       `;
-      tbody.appendChild(tr);
+
+      // Click to open stop detail
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', () => {
+        if (STOPS_DATA[destination]) {
+          // Store current view so we can return
+          closeDetail();
+          openStops();
+          openStopDetail(destination);
+        }
+      });
+
+      itineraryBody.appendChild(tr);
     });
 
     // Vote button
@@ -451,6 +478,7 @@
     routeDetail.classList.remove('hidden');
     explorer.classList.add('hidden');
     votingSection.classList.add('hidden');
+    stopsSection.classList.add('hidden');
     headerBack.classList.remove('hidden');
 
     // Scroll to top
@@ -520,6 +548,7 @@
     currentView = 'explorer';
     routeDetail.classList.add('hidden');
     votingSection.classList.add('hidden');
+    stopsSection.classList.add('hidden');
     explorer.classList.remove('hidden');
     headerBack.classList.add('hidden');
     headerRouteName.textContent = activeRouteId ? ROUTES.find(r => r.id === activeRouteId)?.name || '' : '';
@@ -705,6 +734,156 @@
 
 
   /* =========================================================
+     DESTINATIONS / STOPS
+     ========================================================= */
+
+  function openStops() {
+    currentView = 'stops';
+    stopsSection.classList.remove('hidden');
+    routeDetail.classList.add('hidden');
+    votingSection.classList.add('hidden');
+    explorer.classList.add('hidden');
+    headerBack.classList.remove('hidden');
+    headerRouteName.textContent = 'Destinations';
+
+    renderStopsFilters();
+    renderStopsGrid();
+  }
+
+  function getRoutesForStop(stopName) {
+    const routes = [];
+    ROUTES.forEach(route => {
+      const stopNames = route.itinerary.map(s => s.from).concat(route.itinerary.map(s => s.to));
+      if (stopNames.includes(stopName)) {
+        // Find on which days this stop appears
+        const days = [];
+        route.itinerary.forEach(s => {
+          if (s.from === stopName || s.to === stopName) {
+            days.push(s.day);
+          }
+        });
+        routes.push({ route, days: [...new Set(days)] });
+      }
+    });
+    return routes;
+  }
+
+  function getAllStopNames() {
+    const names = new Set();
+    ROUTES.forEach(route => {
+      route.itinerary.forEach(stop => {
+        names.add(stop.from);
+        if (stop.nm > 0) names.add(stop.to);
+      });
+    });
+    return [...names].sort();
+  }
+
+  function getRegions() {
+    const regions = new Set();
+    Object.values(STOPS_DATA).forEach(s => regions.add(s.region));
+    return ['all', ...Array.from(regions).sort()];
+  }
+
+  function renderStopsFilters() {
+    const container = $('#stops-filters');
+    container.innerHTML = '';
+    const regions = getRegions();
+
+    regions.forEach(region => {
+      const btn = document.createElement('button');
+      btn.className = 'stops-filter-btn' + (region === activeStopFilter ? ' active' : '');
+      btn.textContent = region === 'all' ? 'All' : region;
+      btn.addEventListener('click', () => {
+        activeStopFilter = region;
+        renderStopsFilters();
+        renderStopsGrid();
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function renderStopsGrid() {
+    const grid = $('#stops-grid');
+    grid.innerHTML = '';
+
+    const allNames = getAllStopNames();
+
+    allNames.forEach(name => {
+      const data = STOPS_DATA[name];
+      if (!data) return;
+      if (activeStopFilter !== 'all' && data.region !== activeStopFilter) return;
+
+      const routeCount = getRoutesForStop(name).length;
+      const img = STOP_IMAGES[name] || '';
+
+      const card = document.createElement('div');
+      card.className = 'stop-card';
+
+      card.innerHTML = `
+        <div class="stop-card-image" style="background-image: url('${img}')">
+          <div class="stop-card-overlay">
+            <span class="stop-card-region">${data.region}</span>
+          </div>
+        </div>
+        <div class="stop-card-body">
+          <h4 class="stop-card-name">${name}</h4>
+          <p class="stop-card-desc">${data.desc}</p>
+          <div class="stop-card-routes-count">${routeCount} route${routeCount !== 1 ? 's' : ''}</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => openStopDetail(name));
+      grid.appendChild(card);
+    });
+  }
+
+  function openStopDetail(name) {
+    const data = STOPS_DATA[name];
+    if (!data) return;
+
+    const panel = $('#stop-detail-panel');
+    const img = STOP_IMAGES[name] || '';
+
+    $('#stop-detail-image').style.backgroundImage = img ? `url('${img}')` : 'none';
+    $('#stop-detail-name').textContent = name;
+    $('#stop-detail-region').textContent = data.region;
+    $('#stop-detail-desc').textContent = data.desc;
+
+    // Routes through this stop
+    const routesContainer = $('#stop-detail-routes');
+    routesContainer.innerHTML = '';
+
+    const routes = getRoutesForStop(name);
+    routes.forEach(({ route, days }) => {
+      const routeCard = document.createElement('div');
+      routeCard.className = 'stop-route-link';
+      routeCard.style.setProperty('--accent', route.color);
+      routeCard.innerHTML = `
+        <div class="stop-route-dot" style="background:${route.color}"></div>
+        <div class="stop-route-info">
+          <span class="stop-route-name">${route.name}</span>
+          <span class="stop-route-days">Day ${days.join(', ')}</span>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      `;
+      routeCard.addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.classList.add('hidden');
+        stopsSection.classList.add('hidden');
+        openDetail(route.id);
+      });
+      routesContainer.appendChild(routeCard);
+    });
+
+    panel.classList.remove('hidden');
+
+    // Close handler
+    $('#stop-detail-close').onclick = () => panel.classList.add('hidden');
+  }
+
+
+  /* =========================================================
      HEADER
      ========================================================= */
 
@@ -716,7 +895,7 @@
   }
 
   headerBack.addEventListener('click', () => {
-    if (currentView === 'detail' || currentView === 'voting') {
+    if (currentView === 'detail' || currentView === 'voting' || currentView === 'stops') {
       closeDetail();
     }
   });
@@ -729,6 +908,14 @@
     }
   });
 
+  stopsTabBtn.addEventListener('click', () => {
+    if (currentView === 'stops') {
+      closeDetail();
+    } else {
+      openStops();
+    }
+  });
+
 
   /* =========================================================
      KEYBOARD SHORTCUTS
@@ -736,8 +923,13 @@
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      if (currentView === 'detail' || currentView === 'voting') {
-        closeDetail();
+      if (currentView === 'detail' || currentView === 'voting' || currentView === 'stops') {
+        const panel = $('#stop-detail-panel');
+        if (panel && !panel.classList.contains('hidden')) {
+          panel.classList.add('hidden');
+        } else {
+          closeDetail();
+        }
       }
     }
   });

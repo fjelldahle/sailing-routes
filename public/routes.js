@@ -1,4 +1,128 @@
 // Sailing Routes Data — Athens April 18 – May 2, 2026
+// Stop images — curated photo URLs for each destination
+const STOP_IMAGES = {
+  "Piraeus": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "Aegina": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Poros": "https://images.unsplash.com/photo-1608299809960-aa0c36bfb151?w=800&h=500&fit=crop&auto=format",
+  "Hydra": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&h=500&fit=crop&auto=format",
+  "Spetses": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Porto Heli": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Monemvasia": "https://images.unsplash.com/photo-1581184953963-d15972933db1?w=800&h=500&fit=crop&auto=format",
+  "Elafonisos": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Kythira": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&h=500&fit=crop&auto=format",
+  "Kea": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Kythnos": "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=800&h=500&fit=crop&auto=format",
+  "Serifos": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Sifnos": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Milos": "https://images.unsplash.com/photo-1601921004897-b7d582836c48?w=800&h=500&fit=crop&auto=format",
+  "Santorini": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&h=500&fit=crop&auto=format",
+  "Ios": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Naxos": "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=800&h=500&fit=crop&auto=format",
+  "Paros": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Mykonos": "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=800&h=500&fit=crop&auto=format",
+  "Syros": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Koufonisia": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Schinoussa": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Iraklia": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Donoussa": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Amorgos": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&h=500&fit=crop&auto=format",
+  "Lavrion": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "Andros": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Tinos": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Delos": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "Rinia": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Cape Sounion": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "Patmos": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&h=500&fit=crop&auto=format",
+  "Lipsi": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Leros": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Kalymnos": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Kos": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Nisyros": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Tilos": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Symi": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Rhodes": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "South Evia": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Skyros": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Alonissos": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Marine Park": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Skopelos": "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800&h=500&fit=crop&auto=format",
+  "Skiathos": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Trikeri": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "North Evia": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Kymi": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Heraklion": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "Rethymno": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Chania": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Angistri": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Ermioni": "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=800&h=500&fit=crop&auto=format",
+  "Navplion": "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=500&fit=crop&auto=format",
+  "Leonidio": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&h=500&fit=crop&auto=format",
+  "Kyparissi": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+  "Dokos": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop&auto=format",
+};
+
+// Stop metadata — descriptions and coordinates for the destinations view
+const STOPS_DATA = {
+  "Piraeus": { lat: 37.9364, lng: 23.6466, region: "Attica", desc: "Greece's main port — gateway to the islands, vibrant waterfront, excellent seafood." },
+  "Aegina": { lat: 37.7467, lng: 23.4289, region: "Saronic", desc: "Temple of Aphaia, world-famous pistachios, charming harbor town just 40 minutes from Athens." },
+  "Poros": { lat: 37.5014, lng: 23.4514, region: "Saronic", desc: "Pine-covered island with an iconic clock tower and a 200-meter strait separating it from the Peloponnese." },
+  "Hydra": { lat: 37.3475, lng: 23.4617, region: "Saronic", desc: "No cars, no bikes — only donkeys and water taxis. A living museum beloved by artists and architects." },
+  "Spetses": { lat: 37.2628, lng: 23.1533, region: "Saronic", desc: "Elegant Venetian mansions, horse-drawn carriages, and the Bouboulina naval heroine museum." },
+  "Porto Heli": { lat: 37.3200, lng: 23.1500, region: "Argolic", desc: "Sheltered bay with luxury resorts, perfect provisioning stop before heading south." },
+  "Monemvasia": { lat: 36.6883, lng: 23.0367, region: "Peloponnese", desc: "Medieval fortress town hidden behind a massive rock — the 'Gibraltar of the East.' Spectacular from sea." },
+  "Elafonisos": { lat: 36.4833, lng: 22.9667, region: "Peloponnese", desc: "Simos Beach is often called the Caribbean of Greece — turquoise water, pink-white sand." },
+  "Kythira": { lat: 36.2250, lng: 22.9833, region: "Peloponnese", desc: "Remote island between the Peloponnese and Crete. Mythical birthplace of Aphrodite, waterfall of Fonissa." },
+  "Kea": { lat: 37.6308, lng: 24.3200, region: "Western Cyclades", desc: "Closest Cycladic island to Athens. The ancient Lion of Kea, hiking trails, and a quiet local atmosphere." },
+  "Kythnos": { lat: 37.3833, lng: 24.4167, region: "Western Cyclades", desc: "Natural hot springs at Loutra, empty beaches, and traditional village life untouched by mass tourism." },
+  "Serifos": { lat: 37.1500, lng: 24.5000, region: "Western Cyclades", desc: "Dramatic hilltop Chora with white cube houses tumbling down the cliff. Wild, rugged, beautiful." },
+  "Sifnos": { lat: 36.9667, lng: 24.7167, region: "Western Cyclades", desc: "The food capital of the Cyclades — cooking classes, pottery workshops, and 365 churches." },
+  "Milos": { lat: 36.7167, lng: 24.4333, region: "Western Cyclades", desc: "Sarakiniko moonscape beach, Kleftiko sea caves, ancient catacombs. Where the Venus de Milo was found." },
+  "Santorini": { lat: 36.3933, lng: 25.4614, region: "Cyclades", desc: "The iconic caldera — Oia sunset, Akrotiri Bronze Age ruins, volcanic wine tasting. Unmissable." },
+  "Ios": { lat: 36.7217, lng: 25.2800, region: "Cyclades", desc: "Mylopotas beach, Homer's tomb, and a hilltop Chora that transforms at night." },
+  "Naxos": { lat: 37.1017, lng: 25.3767, region: "Cyclades", desc: "Largest Cycladic island — the ancient Portara gate, incredible food, mountain villages, and long beaches." },
+  "Paros": { lat: 37.0853, lng: 25.1486, region: "Cyclades", desc: "Naoussa fishing village, Parian marble quarries, and the windsurfing mecca of Golden Beach." },
+  "Mykonos": { lat: 37.4467, lng: 25.3267, region: "Cyclades", desc: "Windmills, Little Venice, Pelican Petros, and legendary nightlife. The cosmopolitan heart of the Cyclades." },
+  "Syros": { lat: 37.4431, lng: 24.9411, region: "Cyclades", desc: "Ermoupoli — the neoclassical capital of the Cyclades with a grand town hall, live rebetiko music, and loukoumi." },
+  "Koufonisia": { lat: 36.9333, lng: 25.6000, region: "Small Cyclades", desc: "Tiny paradise — just 400 residents, crystal-clear water, dramatic cliff walks, and Pori Beach." },
+  "Schinoussa": { lat: 36.8667, lng: 25.5167, region: "Small Cyclades", desc: "200 permanent residents and total tranquility. One of the quietest islands in all of Greece." },
+  "Iraklia": { lat: 36.8417, lng: 25.4417, region: "Small Cyclades", desc: "Cave of Agios Ioannis, hiking trails through unspoiled nature, and a genuine fishing village." },
+  "Donoussa": { lat: 37.0833, lng: 25.8167, region: "Small Cyclades", desc: "The most remote of the Small Cyclades. Kedros Beach, zero crowds, ultimate escape." },
+  "Amorgos": { lat: 36.8333, lng: 25.8833, region: "Cyclades", desc: "Hozoviotissa Monastery clinging to a 300m cliff — filming location of The Big Blue. Dramatic and spiritual." },
+  "Lavrion": { lat: 37.7269, lng: 24.0542, region: "Attica", desc: "Ancient silver mining port, now a major charter base. Close to Cape Sounion's Temple of Poseidon." },
+  "Andros": { lat: 37.8333, lng: 24.8167, region: "Northern Cyclades", desc: "Museums, waterfalls, and hiking trails. The greenest Cycladic island with a world-class contemporary art museum." },
+  "Tinos": { lat: 37.5333, lng: 25.1667, region: "Northern Cyclades", desc: "Marble villages, artisan food, giant boulders at Volax — plus Greece's most important pilgrimage church." },
+  "Delos": { lat: 37.3967, lng: 25.2683, region: "Cyclades", desc: "UNESCO World Heritage Site — sacred birthplace of Apollo and Artemis. An entire ancient city to explore." },
+  "Rinia": { lat: 37.4050, lng: 25.2200, region: "Cyclades", desc: "Uninhabited island next to Delos — wild anchorages, swimming in crystal water, no buildings in sight." },
+  "Cape Sounion": { lat: 37.6500, lng: 24.0300, region: "Attica", desc: "Temple of Poseidon on the cliff edge — one of the most dramatic ancient sites in Greece. Epic sunset anchorage." },
+  "Patmos": { lat: 37.3167, lng: 26.5500, region: "Dodecanese", desc: "UNESCO Monastery of St. John, Cave of the Apocalypse where Revelations was written. Sacred and serene." },
+  "Lipsi": { lat: 37.3000, lng: 26.7500, region: "Dodecanese", desc: "Tiny island with church wine, quiet beaches, and a deeply traditional Greek atmosphere." },
+  "Leros": { lat: 37.1500, lng: 26.8500, region: "Dodecanese", desc: "Italian Art Deco architecture from the 1930s, WWII tunnels, and a striking deep bay." },
+  "Kalymnos": { lat: 36.9500, lng: 26.9833, region: "Dodecanese", desc: "Sponge diving capital of the Mediterranean and one of the world's top rock climbing destinations." },
+  "Kos": { lat: 36.8933, lng: 26.9817, region: "Dodecanese", desc: "Birthplace of Hippocrates — ancient Asklepion, cycling paradise, long sandy beaches, Turkish influence." },
+  "Nisyros": { lat: 36.5833, lng: 27.1667, region: "Dodecanese", desc: "Walk into an active volcanic crater — the island IS the volcano. Mandraki village has a medieval castle." },
+  "Tilos": { lat: 36.4500, lng: 27.1167, region: "Dodecanese", desc: "Europe's first green energy island. Rare birds, dwarf elephant fossils, and almost no tourists." },
+  "Symi": { lat: 36.6167, lng: 27.8333, region: "Dodecanese", desc: "The most photogenic harbor in Greece — neoclassical houses in ochre, pink, and terracotta climbing the hill." },
+  "Rhodes": { lat: 36.4500, lng: 28.2267, region: "Dodecanese", desc: "Medieval Old Town (UNESCO) — cobblestone streets, Palace of the Grand Master, one of the best-preserved medieval cities." },
+  "South Evia": { lat: 38.0500, lng: 24.2000, region: "Evia", desc: "Southern tip of Greece's second-largest island. Wild coastline, traditional villages, fewer tourists." },
+  "Skyros": { lat: 38.9000, lng: 24.5667, region: "Sporades", desc: "Wild horses, cliff-top Chora, Rupert Brooke's grave. Unique island with its own distinct culture." },
+  "Alonissos": { lat: 39.1500, lng: 23.8667, region: "Sporades", desc: "Gateway to the National Marine Park — endangered monk seals, pristine waters, pine-covered island." },
+  "Marine Park": { lat: 39.2500, lng: 23.9000, region: "Sporades", desc: "The largest marine protected area in Europe — monk seals, dolphins, rare seabirds, deserted islets." },
+  "Skopelos": { lat: 39.1167, lng: 23.7167, region: "Sporades", desc: "Mamma Mia filming location — the clifftop Agios Ioannis church, plum orchards, lush green hillsides." },
+  "Skiathos": { lat: 39.1600, lng: 23.4900, region: "Sporades", desc: "60+ beaches including boat-only Lalaria with white pebbles and turquoise water. Pine forests meet the sea." },
+  "Trikeri": { lat: 39.1667, lng: 23.0833, region: "Sporades", desc: "Traditional Pelion Peninsula village at the entrance to the Pagasetic Gulf. Time stands still here." },
+  "North Evia": { lat: 38.9333, lng: 23.0833, region: "Evia", desc: "Hot springs, dense forests, traditional mountain villages on Greece's second-largest island." },
+  "Kymi": { lat: 38.6000, lng: 24.1000, region: "Evia", desc: "East coast port of Evia with views across the Aegean to the Sporades. Gateway between island groups." },
+  "Heraklion": { lat: 35.3387, lng: 25.1442, region: "Crete", desc: "Crete's capital — the Minoan Palace of Knossos, world-class Archaeological Museum, vibrant food scene." },
+  "Rethymno": { lat: 35.3667, lng: 24.4833, region: "Crete", desc: "Venetian and Ottoman old town, imposing Fortezza fortress, and a long sandy beach backed by palm trees." },
+  "Chania": { lat: 35.5167, lng: 24.0167, region: "Crete", desc: "The jewel of Crete — Venetian harbor with lighthouse, covered food market, gateway to Samaria Gorge." },
+  "Angistri": { lat: 37.6833, lng: 23.3333, region: "Saronic", desc: "Tiny pine-covered island between Aegina and the Peloponnese. Crystal water, no cars, total peace." },
+  "Ermioni": { lat: 37.3833, lng: 23.2500, region: "Argolic", desc: "Quiet harbor town surrounded by fragrant pine forests on the Argolic coast. A well-kept local secret." },
+  "Navplion": { lat: 37.5667, lng: 22.7833, region: "Argolic", desc: "First capital of modern Greece — Palamidi fortress (999 steps), Bourtzi island castle, neoclassical old town." },
+  "Leonidio": { lat: 37.1667, lng: 22.8500, region: "Peloponnese", desc: "Dramatic cliff town with red rocks, organic farms, and a cliff-hanging monastery. Major climbing destination." },
+  "Kyparissi": { lat: 36.9500, lng: 22.9833, region: "Peloponnese", desc: "Hidden fishing village with no road access — three tiny hamlets accessible only by sea or mountain path." },
+  "Dokos": { lat: 37.3133, lng: 23.3200, region: "Saronic", desc: "Uninhabited island between Hydra and the Peloponnese. Ancient shipwreck site, wild anchorage, total solitude." },
+};
+
 const ROUTES = [
   {
     id: 1,
@@ -397,6 +521,56 @@ const ROUTES = [
       { day: 12, from: "Kyparissi", to: "Monemvasia", nm: 18, hours: 3.5, highlight: "Medieval rock fortress, spectacular approach" },
       { day: 13, from: "Monemvasia", to: "Spetses", nm: 35, hours: 7, highlight: "Heading back north" },
       { day: 14, from: "Spetses", to: "Piraeus", nm: 48, hours: 10, highlight: "Final return passage" }
+    ]
+  }
+  {
+    id: 9,
+    name: "Saronic & Cyclades Crossover",
+    tagline: "Best of both worlds",
+    color: "#06b6d4",
+    colorName: "cyan",
+    totalNm: 285,
+    difficulty: "Moderate",
+    difficultyLevel: 2.5,
+    days: 14,
+    startPort: "Piraeus",
+    endPort: "Piraeus",
+    oneWay: false,
+    highlight: "Car-free Hydra, Saronic charm, then cross to the Cyclades — Sifnos food, Milos moonscapes, Paros villages",
+    description: "The route that refuses to choose. Start with the sheltered beauty of the Saronic Gulf — car-free Hydra, pine-covered Poros — then make the exciting open-water crossing to the western Cyclades. Explore the volcanic landscapes of Milos, the food paradise of Sifnos, and the villages of Paros before threading back through Kea and Cape Sounion. Two worlds in one trip.",
+    weatherNote: "The Saronic Gulf offers calm conditions for the first days. The Hydra-to-Kythnos crossing (~44nm) is the key passage — plan for an early departure and check the forecast. Late April typically has light northerlies (10-15 knots), making this crossing very manageable. The western Cyclades are relatively sheltered.",
+    stops: [
+      { lat: 37.9364, lng: 23.6466 }, // Piraeus
+      { lat: 37.7467, lng: 23.4289 }, // Aegina
+      { lat: 37.5014, lng: 23.4514 }, // Poros
+      { lat: 37.3475, lng: 23.4617 }, // Hydra
+      { lat: 37.3475, lng: 23.4617 }, // Hydra (rest)
+      { lat: 37.3833, lng: 24.4167 }, // Kythnos (the crossing!)
+      { lat: 37.1500, lng: 24.5000 }, // Serifos
+      { lat: 36.9667, lng: 24.7167 }, // Sifnos
+      { lat: 36.7167, lng: 24.4333 }, // Milos
+      { lat: 36.7167, lng: 24.4333 }, // Milos (rest)
+      { lat: 37.0853, lng: 25.1486 }, // Paros
+      { lat: 37.0853, lng: 25.1486 }, // Paros (rest)
+      { lat: 37.6308, lng: 24.3200 }, // Kea
+      { lat: 37.6500, lng: 24.0300 }, // Cape Sounion
+      { lat: 37.9364, lng: 23.6466 }  // Piraeus
+    ],
+    itinerary: [
+      { day: 1, from: "Piraeus", to: "Aegina", nm: 17, hours: 3.5, highlight: "Temple of Aphaia, pistachio capital of Greece" },
+      { day: 2, from: "Aegina", to: "Poros", nm: 22, hours: 4.5, highlight: "Pine-covered island, iconic clock tower, narrow strait" },
+      { day: 3, from: "Poros", to: "Hydra", nm: 12, hours: 2.5, highlight: "No cars, no bikes — donkeys, galleries, artists' haven" },
+      { day: 4, from: "Hydra", to: "Hydra", nm: 0, hours: 0, highlight: "Rest day: Vlychos beach, cliff walk to Kamini, sunset drinks" },
+      { day: 5, from: "Hydra", to: "Kythnos", nm: 44, hours: 8, highlight: "THE crossing — open water to the Cyclades! Hot springs at Loutra" },
+      { day: 6, from: "Kythnos", to: "Serifos", nm: 23, hours: 4.5, highlight: "Dramatic hilltop Chora, white cube houses, Livadi beach" },
+      { day: 7, from: "Serifos", to: "Sifnos", nm: 12, hours: 2.5, highlight: "Food capital of the Cyclades — cooking classes, 365 churches" },
+      { day: 8, from: "Sifnos", to: "Milos", nm: 22, hours: 4.5, highlight: "Sarakiniko moonscape, Kleftiko caves, Adamas harbor" },
+      { day: 9, from: "Milos", to: "Milos", nm: 0, hours: 0, highlight: "Rest day: explore Kleftiko by dinghy, catacombs, Plaka sunset" },
+      { day: 10, from: "Milos", to: "Paros", nm: 48, hours: 9, highlight: "Longer sail east — Naoussa fishing village, marble quarries" },
+      { day: 11, from: "Paros", to: "Paros", nm: 0, hours: 0, highlight: "Rest day: Lefkes mountain village, Golden Beach, Antiparos day trip" },
+      { day: 12, from: "Paros", to: "Kea", nm: 55, hours: 10, highlight: "Long return west — Lion of Kea, quiet bays, Ioulida hilltop town" },
+      { day: 13, from: "Kea", to: "Cape Sounion", nm: 14, hours: 3, highlight: "Temple of Poseidon at sunset — anchor below the ancient columns" },
+      { day: 14, from: "Cape Sounion", to: "Piraeus", nm: 23, hours: 4.5, highlight: "Final sail along the Attic coast back to port" }
     ]
   }
 ];

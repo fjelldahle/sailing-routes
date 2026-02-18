@@ -522,7 +522,7 @@ const ROUTES = [
       { day: 13, from: "Monemvasia", to: "Spetses", nm: 35, hours: 7, highlight: "Heading back north" },
       { day: 14, from: "Spetses", to: "Piraeus", nm: 48, hours: 10, highlight: "Final return passage" }
     ]
-  }
+  },
   {
     id: 9,
     name: "Saronic & Cyclades Crossover",

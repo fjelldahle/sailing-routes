@@ -1,0 +1,13 @@
+{
+  "name": "sailing-routes-claude",
+  "version": "1.0.0",
+  "description": "Athens sailing route comparison and voting — April 2026",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve public",
+    "start": "npx serve public"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}

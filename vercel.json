@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/api/vote", "destination": "/api/vote.js" },
+    { "source": "/api/results", "destination": "/api/results.js" },
+    { "source": "/(.*)", "destination": "/public/$1" }
+  ]
+}

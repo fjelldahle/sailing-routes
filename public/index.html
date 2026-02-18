@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Athens Sailing Routes — April 2026</title>
+  <meta name="description" content="Compare 8 two-week sailing routes from Athens. April 18 – May 2, 2026." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9B%B5</text></svg>" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== ENTRY SCREEN ===================== -->
+  <section id="entry-screen" class="entry-screen">
+    <div class="entry-content">
+      <div class="entry-badge">April 18 – May 2, 2026</div>
+      <h1 class="entry-title">
+        <span class="entry-title-line">Athens</span>
+        <span class="entry-title-line entry-title-italic">Sailing Routes</span>
+      </h1>
+      <div class="entry-divider"></div>
+      <p class="entry-subtitle">
+        Eight two-week itineraries from Piraeus and Lavrion.<br />
+        Compare routes, explore day-by-day plans, and vote for your favourite.
+      </p>
+      <div class="entry-form">
+        <input
+          type="text"
+          id="name-input"
+          class="entry-input"
+          placeholder="Your name"
+          autocomplete="given-name"
+        />
+        <button id="enter-btn" class="btn btn-primary" disabled>
+          Explore Routes
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="entry-hint">8 routes across the Aegean — from sheltered gulfs to open-water crossings</p>
+    </div>
+    <div class="entry-decoration">
+      <svg viewBox="0 0 200 200" class="entry-wave" aria-hidden="true">
+        <path d="M0,100 Q25,80 50,100 T100,100 T150,100 T200,100" fill="none" stroke="currentColor" stroke-width="1" opacity="0.15"/>
+        <path d="M0,110 Q25,90 50,110 T100,110 T150,110 T200,110" fill="none" stroke="currentColor" stroke-width="1" opacity="0.1"/>
+        <path d="M0,120 Q25,100 50,120 T100,120 T150,120 T200,120" fill="none" stroke="currentColor" stroke-width="1" opacity="0.07"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===================== MAIN APP ===================== -->
+  <div id="app" class="app hidden">
+
+    <!-- Sticky Header -->
+    <header id="site-header" class="site-header">
+      <div class="header-inner">
+        <div class="header-left">
+          <button id="header-back" class="header-back hidden" aria-label="Back to routes">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="header-brand">
+            <span class="header-title">Athens</span>
+            <span class="header-title header-title-italic">Sailing</span>
+          </div>
+        </div>
+        <div class="header-center" id="header-route-name"></div>
+        <div class="header-right">
+          <span class="header-user" id="header-user"></span>
+          <button id="vote-tab-btn" class="btn btn-sm btn-outline">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Vote
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Route Explorer -->
+    <main id="explorer" class="explorer">
+      <div class="explorer-layout">
+
+        <!-- Sidebar / Cards -->
+        <aside id="sidebar" class="sidebar">
+          <div class="sidebar-header">
+            <h2 class="sidebar-title">Routes</h2>
+            <p class="sidebar-subtitle">Select a route to explore the itinerary</p>
+          </div>
+          <div id="route-cards" class="route-cards">
+            <!-- Rendered by JS -->
+          </div>
+        </aside>
+
+        <!-- Map Area -->
+        <div class="map-area">
+          <div id="map" class="map"></div>
+          <div class="map-legend" id="map-legend">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Route Detail View (overlay) -->
+    <section id="route-detail" class="route-detail hidden">
+      <div class="detail-scroll">
+        <div class="detail-hero" id="detail-hero">
+          <div class="detail-hero-inner">
+            <div class="detail-badge" id="detail-badge"></div>
+            <h2 class="detail-title" id="detail-title"></h2>
+            <p class="detail-tagline" id="detail-tagline"></p>
+            <div class="detail-stats" id="detail-stats"></div>
+          </div>
+        </div>
+
+        <div class="detail-body">
+          <!-- Description -->
+          <div class="detail-section" id="detail-description-section">
+            <p class="detail-description" id="detail-description"></p>
+          </div>
+
+          <!-- Weather Widget -->
+          <div class="detail-section">
+            <h3 class="detail-section-title">Late April Conditions</h3>
+            <div class="weather-grid" id="detail-weather"></div>
+            <p class="weather-note" id="detail-weather-note"></p>
+          </div>
+
+          <!-- Difficulty Meter -->
+          <div class="detail-section">
+            <h3 class="detail-section-title">Difficulty</h3>
+            <div class="difficulty-meter" id="detail-difficulty"></div>
+          </div>
+
+          <!-- Detail Map -->
+          <div class="detail-section">
+            <h3 class="detail-section-title">Route Map</h3>
+            <div id="detail-map" class="detail-map"></div>
+          </div>
+
+          <!-- Itinerary Table -->
+          <div class="detail-section">
+            <h3 class="detail-section-title">Day-by-Day Itinerary</h3>
+            <div class="itinerary-table-wrap">
+              <table class="itinerary-table" id="detail-itinerary">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Distance</th>
+                    <th>Time</th>
+                    <th>Highlights</th>
+                  </tr>
+                </thead>
+                <tbody id="detail-itinerary-body">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Vote CTA -->
+          <div class="detail-section detail-vote-section">
+            <button class="btn btn-primary btn-lg detail-vote-btn" id="detail-vote-btn">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1l2.47 5.01L17 6.76l-4 3.9.94 5.5L9 13.77l-4.94 2.39.94-5.5-4-3.9 5.53-.75L9 1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Vote for this route
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Voting Section (overlay) -->
+    <section id="voting-section" class="voting-section hidden">
+      <div class="voting-scroll">
+        <div class="voting-header">
+          <h2 class="voting-title">Cast Your Vote</h2>
+          <p class="voting-subtitle">Pick the route you'd most like to sail</p>
+        </div>
+
+        <div class="voting-grid" id="voting-grid">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="voting-results-area" id="voting-results-area">
+          <div class="voting-divider"></div>
+          <h3 class="voting-results-title">Current Results</h3>
+          <div class="voting-results" id="voting-results">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="voting-voters" id="voting-voters">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="routes.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
